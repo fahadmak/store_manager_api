@@ -9,6 +9,8 @@ class TestProductApi(unittest.TestCase):
         self.app = app.test_client()
         self.products = products
 
+    # Test cases for add products
+
     def test_add_products(self):
         post_signup = dict(name="Fahad", price=12)
         response = self.app.post('/api/v1/products', json=post_signup)
@@ -27,7 +29,15 @@ class TestProductApi(unittest.TestCase):
     def test_incorrect_input(self):
         post_signup = dict(name=1, price=1)
         response = self.app.post('/api/v1/products', json=post_signup)
-        assert response.status_code == 400
+        # assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
         assert "incorrect information" in str(response.data)
 
+    def test_user_already_exists(self):
+        post_signup = dict(name="Fahad", price=12)
+        post_signup2 = dict(name="Fahad", price=12)
+        response = self.app.post('/api/v1/products', json=post_signup)
+        response2 = self.app.post('/api/v1/products', json=post_signup2)
+        assert response2.status_code == 409
+        assert response2.headers["Content-Type"] == "application/json"
+        assert "Fahad already exists" in str(response2.data)
