@@ -24,3 +24,10 @@ class TestProductApi(unittest.TestCase):
         assert response.headers["Content-Type"] == "application/json"
         assert "missing fields" in str(response.data)
 
+    def test_incorrect_input(self):
+        post_signup = dict(name=1, price=1)
+        response = self.app.post('/api/v1/products', json=post_signup)
+        assert response.status_code == 400
+        assert response.headers["Content-Type"] == "application/json"
+        assert "incorrect information" in str(response.data)
+
