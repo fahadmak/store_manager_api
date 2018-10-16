@@ -17,5 +17,10 @@ class TestProductApi(unittest.TestCase):
         assert "Fahad" in str(response.data)
         assert "Fahad" in [product.name for product in self.products]
 
-
+    def test_empty_fields(self):
+        post_signup = dict(name="Fahad")
+        response = self.app.post('/api/v1/products', json=post_signup)
+        assert response.status_code == 400
+        assert response.headers["Content-Type"] == "application/json"
+        assert "missing fields" in str(response.data)
 
