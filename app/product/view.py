@@ -12,6 +12,9 @@ def add_product():
     price = data.get("price")
     if not all([name, price]):
         return jsonify({"message": "please fill missing fields"}), 400
+    valid = validate(name, price)
+    if not valid:
+        return jsonify({"message": "incorrect information"}), 400
     productId = max([product.productId for product in products]) + 1 if products else 1
     product = Product(productId, name, price)
     products.append(product)
