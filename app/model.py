@@ -17,16 +17,18 @@ class Product:
         to_json(self)
             Converts the product instance to a dictionary
     """
-    def __init__(self, name, price):
+    def __init__(self, productId, name, price):
+        self.productId = productId
         self.name = name
         self.price = price
 
-    def __str__(self):
+    def __repr__(self):
         return f"Product: {self.name}, has been added to inventory"
 
     def to_json(self):
         """A method to Convert the product instance to a dictionary"""
         product = {
+            'productId': self.productId,
             'name': self.name,
             'price': self.price
         }
