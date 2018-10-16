@@ -1,22 +1,21 @@
 import unittest
-from app.model import Product, products
+from app import create_app
+from app.model import products
 
 
-class TestProduct(unittest.TestCase):
+class TestProductApi(unittest.TestCase):
     def setUp(self):
-        self.product = Product
+        app = create_app("testing")
+        self.app = app.test_client()
         self.products = products
-        self.product1 = self.product("benwa", 5000)
-        self.products = [self.product1]
 
-    def test_create_product(self):
-        assert isinstance(self.product1, self.product)
-        assert self.product1.name == "benwa"
-        assert self.product1.price == 5000
+    def test_add_products(self):
+        post_signup = dict(name="Fahad", price=12)
+        response = self.app.post('/api/v1/products', json=post_signup)
+        assert response.status_code == 201
+        assert response.headers["Content-Type"] == "application/json"
+        assert "Fahad" in str(response.data)
+        assert "Fahad" in [product.name for product in self.products]
 
-    def test_to_json(self):
-        product_json = self.product1.to_json()
-        assert isinstance(product_json, dict)
-        assert product_json == {"name": "benwa", "price": 5000}
 
 
