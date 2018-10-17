@@ -70,5 +70,11 @@ class TestProductApi(unittest.TestCase):
         assert response1.headers["Content-Type"] == "application/json"
         assert "Fahad" in str(response1.data)
 
+    def test_product_of_id_does_not_exist(self):
+        response2 = self.app.get('/api/v1/products/1')
+        assert response2.status_code == 404
+        assert response2.headers["Content-Type"] == "application/json"
+        assert "product of ID 1 does not exist" in str(response2.data)
+
     def tearDown(self):
         self.products.clear()
