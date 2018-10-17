@@ -1,4 +1,6 @@
 import unittest
+import json
+
 from app import create_app
 from app.model import products
 
@@ -38,7 +40,7 @@ class TestProductApi(unittest.TestCase):
         post_signup2 = dict(name="Fahad", price=12)
         response = self.app.post('/api/v1/products', json=post_signup)
         response2 = self.app.post('/api/v1/products', json=post_signup2)
-        assert response2.status_code == 409
+        assert response2.status_code == 400
         assert response2.headers["Content-Type"] == "application/json"
         assert "Fahad already exists" in str(response2.data)
 
@@ -59,6 +61,20 @@ class TestProductApi(unittest.TestCase):
         assert "There currently no products" in str(response3.data)
         assert response3.status_code == 200
         assert response3.headers["Content-Type"] == "application/json"
+
+    def test_get_product_by_id(self):
+        post_signup = dict(name="Fahad", price=12)
+        response = self.app.post('/api/v1/products', json=post_signup)
+        response1 = self.app.get('/api/v1/products/1')
+        assert response1.status_code == 200
+        assert response1.headers["Content-Type"] == "application/json"
+        assert "Fahad" in str(response1.data)
+
+    def test_product_of_id_does_not_exist(self):
+        response2 = self.app.get('/api/v1/products/1')
+        assert response2.status_code == 404
+        assert response2.headers["Content-Type"] == "application/json"
+        assert "product of ID 1 does not exist" in str(response2.data)
 
     def tearDown(self):
         self.products.clear()
