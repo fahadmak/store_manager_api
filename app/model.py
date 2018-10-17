@@ -1,4 +1,7 @@
 products = []
+sales = []
+
+
 class Product:
     """
         A class used to represent a Product
@@ -36,3 +39,35 @@ class Product:
         return product
 
 
+class Sale:
+    """
+        A class used to represent a Sale
+
+        ...
+
+        Attributes
+        ----------
+        saleId : int
+            the id of the sale record
+        cart : dict
+            the products and there respective quantities
+        date : str
+            the time and date when sale record was created
+        Methods
+        -------
+        to_json(self)
+            Converts the sales instance to a dictionary
+    """
+
+    def __init__(self, saleId, cart, date):
+        self.saleId = saleId
+        self.cart = cart
+        self.date = date
+
+    def to_json(self):
+        sale = {
+            "saleId": self.saleId,
+            "cart": self.cart,
+            "date": self.date,
+        }
+        return sale
