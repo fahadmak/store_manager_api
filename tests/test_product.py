@@ -41,3 +41,16 @@ class TestProductApi(unittest.TestCase):
         assert response2.status_code == 409
         assert response2.headers["Content-Type"] == "application/json"
         assert "Fahad already exists" in str(response2.data)
+
+    # Tests for get all products
+
+    def test_get_all_products(self):
+        post_signup = dict(name="Fahad", price=12)
+        post_signup2 = dict(name="Jowe", price=120)
+        response = self.app.post('/api/v1/products', json=post_signup)
+        response2 = self.app.post('/api/v1/products', json=post_signup2)
+        response3 = self.app.get('/api/v1/products')
+        assert response3.status_code == 200
+        assert response3.headers["Content-Type"] == "application/json"
+        assert "Fahad" and "Jowe" in str(response3.data)
+
