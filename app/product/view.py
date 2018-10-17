@@ -38,6 +38,9 @@ def get_all_products():
 @product.route("/api/v1/products/<int:productId>", methods=["GET"])
 def get_product_by_id(productId):
     product = [product.to_json() for product in products if product.productId == productId] if products else False
+    if not product:
+        error = json.dumps({"message": f"product of ID {productId} does not exist"})
+        return jsonify({"product": error}), 404
     product = json.dumps(product[0])
     return jsonify({"product": product}), 200
 
