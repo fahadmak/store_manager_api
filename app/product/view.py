@@ -29,18 +29,18 @@ def add_product():
 def get_all_products():
     """A method returns a products dictionary"""
     if not products:
-        error = json.dumps({"message": "There currently no products"})
-        return jsonify(error), 200
-    all_products = json.dumps([product.to_json() for product in products])
+        return jsonify({"message": "There currently no products"}), 200
+    all_products = [product.to_json() for product in products]
     return jsonify({"products": all_products}), 200
 
 
 @product.route("/api/v1/products/<int:productId>", methods=["GET"])
 def get_product_by_id(productId):
+    """A method returns a product whose id is passed as an argument"""
     product = [product.to_json() for product in products if product.productId == productId] if products else False
     if not product:
-        error = json.dumps({"message": f"product of ID {productId} does not exist"})
+        error = {"message": f"product of ID {productId} does not exist"}
         return jsonify({"product": error}), 404
-    product = json.dumps(product[0])
+    product = product[0]
     return jsonify({"product": product}), 200
 
