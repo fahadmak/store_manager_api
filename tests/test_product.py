@@ -54,3 +54,9 @@ class TestProductApi(unittest.TestCase):
         assert response3.headers["Content-Type"] == "application/json"
         assert "Fahad" and "Jowe" in str(response3.data)
 
+    def test_no_products(self):
+        response3 = self.app.get('/api/v1/products')
+        assert "There currently no products" in str(response3.data)
+        assert response3.status_code == 200
+        assert response3.headers["Content-Type"] == "application/json"
+
