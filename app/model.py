@@ -23,6 +23,7 @@ class Product:
         self.price = price
 
     def __repr__(self):
+        """A method to returns the string representation of an object"""
         return f"Product: {self.name}, has been added to inventory"
 
     def to_json(self):
