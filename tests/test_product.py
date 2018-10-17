@@ -60,3 +60,5 @@ class TestProductApi(unittest.TestCase):
         assert response3.status_code == 200
         assert response3.headers["Content-Type"] == "application/json"
 
+    def tearDown(self):
+        self.products.clear()
