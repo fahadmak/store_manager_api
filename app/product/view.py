@@ -7,6 +7,7 @@ product = Blueprint("product", __name__)
 
 @product.route("/api/v1/products", methods=["POST"])
 def add_product():
+    """A method adds product instance to products list"""
     data = request.json
     name = data.get("name")
     price = data.get("price")
@@ -16,16 +17,16 @@ def add_product():
     if not valid:
         return jsonify({"message": "incorrect information"}), 400
     if name in [product.name for product in products]:
-        return jsonify({"message": f"{name} already exists"}), 409
+        return jsonify({"message": f"{name} already exists"}), 400
     productId = max([product.productId for product in products]) + 1 if products else 1
     product = Product(productId, name, price)
     products.append(product)
     return jsonify({"message": str(product)}), 201
 
 
-
 @product.route("/api/v1/products", methods=["GET"])
 def get_all_products():
+    """A method returns a products dictionary"""
     if not products:
         error = json.dumps({"message": "There currently no products"})
         return jsonify(error), 200
