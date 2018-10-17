@@ -26,4 +26,13 @@ def add_product():
         return jsonify({"message": "Oops something went wrong"}), 500
 
 
-
+@product.route("/api/v1/products", methods=["GET"])
+def get_all_products():
+    try:
+        if not products:
+            error = json.dumps({"message": "There currently no products"})
+            return jsonify(error), 200
+        all_products = json.dumps([product.to_json() for product in products])
+        return jsonify({"products": all_products}), 200
+    except:
+        return jsonify({"message": "Oops something went wrong"}), 500
