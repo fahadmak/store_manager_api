@@ -26,9 +26,8 @@ def add_product():
 
 @product.route("/api/v1/products", methods=["GET"])
 def get_all_products():
-    if products:
-        all_products = json.dumps([product.to_json() for product in products])
-        return jsonify({"products": all_products}), 200
-    error = json.dumps({"message": "There currently no products"})
-    return jsonify(error), 200
-
+    if not products:
+        error = json.dumps({"message": "There currently no products"})
+        return jsonify(error), 200
+    all_products = json.dumps([product.to_json() for product in products])
+    return jsonify({"products": all_products}), 200
