@@ -2,7 +2,7 @@ import unittest
 from app.model import Product, products, Sale, sales
 
 
-class TestProduct(unittest.TestCase):
+class TestModel(unittest.TestCase):
     def setUp(self):
         self.product = Product
         self.products = products
@@ -12,7 +12,7 @@ class TestProduct(unittest.TestCase):
 
         self.sale = Sale
         self.sales = sales
-        self.sale1 = self.sale(1, [{"benwa": 2}, {"meshu": 4}], 'Wed Oct 17 22:36:35 2018')
+        self.sale1 = self.sale(1, {"benwa": 2, "meshu": 4}, 'Wed Oct 17 22:36:35 2018')
         self.sales = [self.sale1]
 
     def test_create_product(self):
@@ -20,7 +20,7 @@ class TestProduct(unittest.TestCase):
         assert self.product1.name == "benwa"
         assert self.product1.price == 5000
 
-    def test_to_json(self):
+    def test_product_to_json(self):
         product_json = self.product1.to_json()
         assert isinstance(product_json, dict)
         assert product_json == {"productId": 1, "name": "benwa", "price": 5000}
@@ -28,4 +28,8 @@ class TestProduct(unittest.TestCase):
     def test_create_sale(self):
         assert isinstance(self.sale1, self.sale)
         assert self.sale1.date == 'Wed Oct 17 22:36:35 2018'
+        assert "benwa" in self.sale1.cart
 
+    def test_sale_to_json(self):
+        sale_json = self.sale1.to_json()
+        assert isinstance(sale_json, dict)
