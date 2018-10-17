@@ -33,3 +33,11 @@ def get_all_products():
         return jsonify(error), 200
     all_products = json.dumps([product.to_json() for product in products])
     return jsonify({"products": all_products}), 200
+
+
+@product.route("/api/v1/products/<int:productId>", methods=["GET"])
+def get_product_by_id(productId):
+    product = [product.to_json() for product in products if product.productId == productId] if products else False
+    product = json.dumps(product[0])
+    return jsonify({"product": product}), 200
+
