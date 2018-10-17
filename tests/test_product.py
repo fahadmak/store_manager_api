@@ -38,7 +38,7 @@ class TestProductApi(unittest.TestCase):
         post_signup2 = dict(name="Fahad", price=12)
         response = self.app.post('/api/v1/products', json=post_signup)
         response2 = self.app.post('/api/v1/products', json=post_signup2)
-        assert response2.status_code == 409
+        assert response2.status_code == 400
         assert response2.headers["Content-Type"] == "application/json"
         assert "Fahad already exists" in str(response2.data)
 
