@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request, json
 
 from app.model import Product, products
 from app.validate import validate
+from app.utils import find_product
 
 product = Blueprint("product", __name__)
 
@@ -17,7 +18,8 @@ def add_product():
     valid = validate(name, price)
     if not valid:
         return jsonify({"message": "incorrect information"}), 400
-    if name in [product.name for product in products]:
+    found_product = find_product(name)
+    if found_product:
         return jsonify({"message": f"{name} already exists"}), 400
     productId = max([product.productId for product in products]) + 1 if products else 1     # create productId
     product = Product(productId, name, price)
