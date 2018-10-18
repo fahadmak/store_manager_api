@@ -32,5 +32,13 @@ def get_all_sales():
     json_sales = []
     for sold in sales:
         json_sales.append(sold.to_json())
-    return jsonify({"sales": json_sales})
+    return jsonify({"sales": json_sales}), 200
 
+
+@sale.route("/api/v1/sales/<int:saleId>", methods=["GET"])
+def get_sale_by_id(saleId):
+    for sold in sales:
+        if sold.saleId == saleId:
+            return jsonify({"sale": sold.to_json()}), 200
+    else:
+        return jsonify({"error": f"Sale Record of ID {saleId} does not exist"}), 404
