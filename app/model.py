@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 products = []
 sales = []
 
@@ -72,8 +73,14 @@ class Sale:
     def to_json(self):
         """A method to Convert the sale instance to a dictionary"""
         sale = {
+            "date": self.date,
             "saleId": self.saleId,
-            "cart": self.cart,
-            "date": self.date
+            "quantity": self.cart,
+            "cost_price": {item: product.price * self.cart[item]
+                           for item, product in zip(self.cart, products)
+                           if item == product.name},
+            "total": sum([product.price * self.cart[item] for item, product in zip(self.cart, products)
+                          if item == product.name])
+
         }
         return sale
