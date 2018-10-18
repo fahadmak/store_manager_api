@@ -10,6 +10,8 @@ product = Blueprint("product", __name__)
 @product.route("/api/v1/products", methods=["POST"])
 def add_product():
     """A method adds product instance to products list"""
+    if request.content_type != "application/json":
+        return jsonify({'message': "Invalid content type"}), 400
     data = request.json
     name = data.get("name")
     price = data.get("price")
