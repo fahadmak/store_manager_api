@@ -87,5 +87,13 @@ class TestSales(unittest.TestCase):
         assert response.status_code == 200
         assert response.headers["Content-Type"] == "application/json"
 
+    def test_sale_id_doesnot_exist(self):
+        response = self.app.get('/api/v1/sales/1')
+        data = json.loads(response.data)
+        assert 'Sale Record of ID 1 does not exist' in data['error']
+        assert isinstance(data, dict)
+        assert response.status_code == 404
+        assert response.headers["Content-Type"] == "application/json"
+
     def tearDown(self):
         self.sales.clear()
