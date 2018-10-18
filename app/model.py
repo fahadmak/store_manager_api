@@ -76,6 +76,8 @@ class Sale:
             "date": self.date,
             "saleId": self.saleId,
             "quantity": self.cart,
+            'unit_price': {item: product.price for item, product in zip(self.cart, products)
+                           if item == product.name},
             "cost_price": {item: product.price * self.cart[item]
                            for item, product in zip(self.cart, products)
                            if item == product.name},
