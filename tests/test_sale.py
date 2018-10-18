@@ -75,5 +75,17 @@ class TestSales(unittest.TestCase):
         assert response.status_code == 404
         assert response.headers["Content-Type"] == "application/json"
 
+    def test_get_sale_by_id(self):
+        post_signup = dict(name="Fahad", price=12)
+        response1 = self.app.post('/api/v1/products', json=post_signup)
+        post_sale = dict(cart={"Fahad": 2})
+        response2 = self.app.post('/api/v1/sales', json=post_sale)
+        response = self.app.get('/api/v1/sales/1')
+        data = json.loads(response.data)['sale']
+        assert "total" in data
+        assert isinstance(data, dict)
+        assert response.status_code == 200
+        assert response.headers["Content-Type"] == "application/json"
+
     def tearDown(self):
         self.sales.clear()
