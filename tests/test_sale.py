@@ -16,6 +16,13 @@ class TestSales(unittest.TestCase):
         self.product2 = self.product(2, "meshu", 8000)
         self.products = [self.product1, self.product2]
 
+    def test_sale_content_type(self):
+        post_sale = dict(cart={"Fahad": 2})
+        response = self.app.post('/api/v1/sales', json=post_sale, content_type='application/javascript')
+        assert response.status_code == 400
+        assert response.headers["Content-Type"] == "application/json"
+        assert "Invalid content type" in str(response.data)
+
     # Test cases for add sales record
 
     def test_create_sale(self):
@@ -48,3 +55,20 @@ class TestSales(unittest.TestCase):
         assert response.status_code == 404
         assert response.headers["Content-Type"] == "application/json"
         assert "['finca', 'manny'] products can not be found" == json.loads(response.data)['message']
+
+    def test_get_all_sales(self):
+        post_signup = dict(name="Fahad", price=12)
+        response1 = self.app.post('/api/v1/products', json=post_signup)
+        post_sale = dict(cart={"Fahad": 2})
+        response2 = self.app.post('/api/v1/sales', json=post_sale)
+        response = self.app.get('/api/v1/sales')
+        data = json.loads(response.data)['sales']
+        assert isinstance(data, list)
+        assert "total" in data[0]
+        assert response.status_code == 200
+        assert response.headers["Content-Type"] == "application/json"
+
+
+
+    def tearDown(self):
+        self.sales.clear()
