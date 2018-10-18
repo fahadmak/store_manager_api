@@ -39,22 +39,21 @@ class TestSales(unittest.TestCase):
         response = self.app.post('/api/v1/sales', json=post_sale)
         assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
-        print(json.loads(response.data))
-        assert "please fill missing fields" == json.loads(response.data)['message']
+        assert "please fill missing fields" == json.loads(response.data)['error']
 
     def test_wrong_input(self):
         post_sale = dict(cart="mission")
         response = self.app.post('/api/v1/sales', json=post_sale)
         assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
-        assert "please input correct format" in json.loads(response.data)['message']
+        assert "please input correct format" in json.loads(response.data)['error']
 
     def test_product_not_found(self):
         post_sale = dict(cart={"finca": 2, "manny": 4})
         response = self.app.post('/api/v1/sales', json=post_sale)
         assert response.status_code == 404
         assert response.headers["Content-Type"] == "application/json"
-        assert "['finca', 'manny'] products can not be found" == json.loads(response.data)['message']
+        assert "['finca', 'manny'] products can not be found" == json.loads(response.data)['error']
 
     def test_get_all_sales(self):
         post_signup = dict(name="Fahad", price=12)
@@ -68,7 +67,13 @@ class TestSales(unittest.TestCase):
         assert response.status_code == 200
         assert response.headers["Content-Type"] == "application/json"
 
-
+    def test_no_sales(self):
+        response = self.app.get('/api/v1/sales')
+        data = json.loads(response.data)
+        assert isinstance(data, dict)
+        assert 'They are currently no sales' in data['error']
+        assert response.status_code == 404
+        assert response.headers["Content-Type"] == "application/json"
 
     def tearDown(self):
         self.sales.clear()
