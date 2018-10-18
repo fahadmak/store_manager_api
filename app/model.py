@@ -1,4 +1,9 @@
+from datetime import datetime
+
 products = []
+sales = []
+
+
 class Product:
     """
         A class used to represent a Product
@@ -36,3 +41,39 @@ class Product:
         return product
 
 
+class Sale:
+    """
+        A class used to represent a Sale
+
+        ...
+
+        Attributes
+        ----------
+        saleId : int
+            the id of the sale record
+        cart : dict
+            the products and there respective quantities
+        date : str
+            the time and date when sale record was created
+        Methods
+        -------
+        to_json(self)
+            Converts the sales instance to a dictionary
+    """
+
+    def __init__(self, saleId, cart):
+        self.saleId = saleId
+        self.cart = cart
+        self.date = datetime.utcnow().ctime()
+
+    def __repr__(self):
+        return f"Sale of ID {self.saleId} has been created"
+
+    def to_json(self):
+        """A method to Convert the sale instance to a dictionary"""
+        sale = {
+            "saleId": self.saleId,
+            "cart": self.cart,
+            "date": self.date
+        }
+        return sale

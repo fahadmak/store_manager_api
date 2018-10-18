@@ -1,3 +1,23 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify, request, json
 
+from app.model import Sale, sales
+from app.utils import find_product
 sale = Blueprint('sale', __name__)
+
+
+@sale.route("/api/v1/sales", methods=["POST"])
+def add_sale():
+    data = request.json
+    cart = data.get('cart')
+    if not cart:
+        return jsonify({"message": "please fill missing fields"}), 400
+    if not isinstance(cart, dict):
+        return jsonify({"message": "please input correct format like {'corn': 6000, 'fish': 12300}"}), 400
+    cart_products = [product for product in cart]
+    unavailable = [cart_product for cart_product in cart_products if find_product(cart_product) is False]
+    if not unavailable:
+        saleId = max([sale.saleId for sale in sales]) + 1 if sales else 1
+        sale = Sale(saleId, cart)
+        sales.append(sale)
+        return jsonify({"message": str(sale)}), 201
+    return jsonify({"message": f"{unavailable} products can not be found"}), 404
