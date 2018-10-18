@@ -39,4 +39,6 @@ def get_all_sales():
 def get_sale_by_id(saleId):
     for sold in sales:
         if sold.saleId == saleId:
-            return jsonify({"sale": sold.to_json()})
+            return jsonify({"sale": sold.to_json()}), 200
+    else:
+        return jsonify({"error": f"Sale Record of ID {saleId} does not exist"}), 404
