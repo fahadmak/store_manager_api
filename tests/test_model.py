@@ -12,7 +12,7 @@ class TestModel(unittest.TestCase):
 
         self.sale = Sale
         self.sales = sales
-        self.sale1 = self.sale(1, {"benwa": 2, "meshu": 4}, 'Wed Oct 17 22:36:35 2018')
+        self.sale1 = self.sale(1, {"benwa": 2, "meshu": 4})
         self.sales = [self.sale1]
 
     def test_create_product(self):
@@ -27,7 +27,6 @@ class TestModel(unittest.TestCase):
 
     def test_create_sale(self):
         assert isinstance(self.sale1, self.sale)
-        assert self.sale1.date == 'Wed Oct 17 22:36:35 2018'
         assert "benwa" in self.sale1.cart
 
     def test_sale_to_json(self):
