@@ -10,6 +10,8 @@ product = Blueprint("product", __name__)
 @product.route("/api/v1/products", methods=["POST"])
 def add_product():
     """A method adds product instance to products list"""
+    if request.content_type != "application/json":
+        return jsonify({'message': "Invalid content type"}), 400
     data = request.json
     name = data.get("name")
     price = data.get("price")
@@ -30,6 +32,8 @@ def add_product():
 @product.route("/api/v1/products", methods=["GET"])
 def get_all_products():
     """A method returns a products dictionary"""
+    if request.content_type != "application/json":
+        return jsonify({'message': "Invalid content type"}), 400
     if not products:
         return jsonify({"message": "There currently no products"}), 200
     all_products = [product.to_json() for product in products]
@@ -39,6 +43,8 @@ def get_all_products():
 @product.route("/api/v1/products/<int:productId>", methods=["GET"])
 def get_product_by_id(productId):
     """A method returns a product whose id is passed as an argument"""
+    if request.content_type != "application/json":
+        return jsonify({'message': "Invalid content type"}), 400
     product = [product.to_json() for product in products if product.productId == productId] if products else False
     if not product:
         error = {"message": f"product of ID {productId} does not exist"}
