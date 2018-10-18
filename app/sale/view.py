@@ -8,13 +8,13 @@ sale = Blueprint('sale', __name__)
 @sale.route("/api/v1/sales", methods=["POST"])
 def add_sale():
     if request.content_type != "application/json":
-        return jsonify({'message': "Invalid content type"}), 400
+        return jsonify({"error": "Invalid content type"}), 400
     data = request.json
     cart = data.get('cart')
     if not cart:
-        return jsonify({"message": "please fill missing fields"}), 400
+        return jsonify({"error": "please fill missing fields"}), 400
     if not isinstance(cart, dict):
-        return jsonify({"message": "please input correct format like {'corn': 6000, 'fish': 12300}"}), 400
+        return jsonify({"error": "please input correct format like {'corn': 6000, 'fish': 12300}"}), 400
     cart_products = [product for product in cart]
     unavailable = [cart_product for cart_product in cart_products if find_product(cart_product) is False]
     if not unavailable:
@@ -22,11 +22,13 @@ def add_sale():
         sold = Sale(sold_id, cart)
         sales.append(sold)
         return jsonify({"message": str(sold)}), 201
-    return jsonify({"message": f"{unavailable} products can not be found"}), 404
+    return jsonify({"error": f"{unavailable} products can not be found"}), 404
 
 
 @sale.route("/api/v1/sales", methods=["GET"])
 def get_all_sales():
+    if not sales:
+        return jsonify({"error": "They are currently no sales"}), 404
     json_sales = []
     for sold in sales:
         json_sales.append(sold.to_json())
