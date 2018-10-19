@@ -5,7 +5,7 @@ python:
 env:
   global:
     - CODECOV_TOKEN="16a71d20-de9d-4288-aa8c-e6dc295b1e03"
-
+    - CC_TEST_REPORTER_ID=ae39d0debe5acadb0a260e7431b659de934b730ddf4bd7b0e560cdcf4934712d
 install:
   - easy_install distribute
   - pip install -r requirements.txt
@@ -14,8 +14,14 @@ install:
   - pip install coveralls
   - pip install codecov
 
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+  - bundle exec rspec
 script:
   - pytest --cov=app/
   - coveralls
 after_success:
   - codecov
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
