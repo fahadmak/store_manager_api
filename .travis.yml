@@ -2,6 +2,9 @@ language: python
 
 python:
   - "3.6"
+env:
+  global:
+    - CODECOV_TOKEN="16a71d20-de9d-4288-aa8c-e6dc295b1e03"
 
 install:
   - easy_install distribute
