@@ -1,4 +1,4 @@
-from app.model import products
+from app.models.model import products
 
 
 def find_product(product_name):

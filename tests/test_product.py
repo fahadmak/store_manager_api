@@ -1,8 +1,7 @@
 import unittest
-import json
 
 from app import create_app
-from app.model import products
+from app.models.model import products
 
 
 class TestProductApi(unittest.TestCase):

@@ -2,7 +2,7 @@ import unittest
 import json
 
 from app import create_app
-from app.model import sales, products, Product
+from app.models.model import sales, products, Product
 
 
 class TestSales(unittest.TestCase):
@@ -39,21 +39,21 @@ class TestSales(unittest.TestCase):
         response = self.app.post('/api/v1/sales', json=post_sale)
         assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
-        assert "please fill missing fields" == json.loads(response.data)['error']
+        assert "please fill missing fields" == json.loads(response.data)['message']
 
     def test_wrong_input(self):
         post_sale = dict(cart="mission")
         response = self.app.post('/api/v1/sales', json=post_sale)
         assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
-        assert "please input correct format" in json.loads(response.data)['error']
+        assert "please input correct format" in json.loads(response.data)['message']
 
     def test_product_not_found(self):
         post_sale = dict(cart={"finca": 2, "manny": 4})
         response = self.app.post('/api/v1/sales', json=post_sale)
         assert response.status_code == 404
         assert response.headers["Content-Type"] == "application/json"
-        assert "['finca', 'manny'] products can not be found" == json.loads(response.data)['error']
+        assert "['finca', 'manny'] products can not be found" == json.loads(response.data)['message']
 
     def test_get_all_sales(self):
         post_signup = dict(name="Fahad", price=12)
@@ -71,7 +71,7 @@ class TestSales(unittest.TestCase):
         response = self.app.get('/api/v1/sales')
         data = json.loads(response.data)
         assert isinstance(data, dict)
-        assert 'They are currently no sales' in data['error']
+        assert 'They are currently no sales' in data['message']
         assert response.status_code == 404
         assert response.headers["Content-Type"] == "application/json"
 
