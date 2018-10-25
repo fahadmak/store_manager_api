@@ -6,8 +6,8 @@ class TestModel(unittest.TestCase):
     def setUp(self):
         self.product = Product
         self.products = products
-        self.product1 = self.product(1, "benwa", 5000)
-        self.product2 = self.product(2, "meshu", 8000)
+        self.product1 = self.product(1, "benwa", 5000, 20)
+        self.product2 = self.product(2, "meshu", 8000, 30)
         self.products = [self.product1, self.product2]
 
         self.sale = Sale
@@ -23,7 +23,7 @@ class TestModel(unittest.TestCase):
     def test_product_to_json(self):
         product_json = self.product1.to_json()
         assert isinstance(product_json, dict)
-        assert product_json == {"productId": 1, "name": "benwa", "price": 5000}
+        assert product_json == {"productId": 1, "name": "benwa", "price": 5000, "quantity": 20}
 
     def test_create_sale(self):
         assert isinstance(self.sale1, self.sale)

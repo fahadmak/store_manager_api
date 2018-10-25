@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from app.models.model import Product, products
-from app.models.error_model import InvalidUsage, InternalServerError
+from app.error_handler import InvalidUsage, InternalServerError
 from app.validate import validate
 from app.utils import find_product
 
@@ -17,17 +17,18 @@ def add_product():
     data = request.json
     name = data.get("name")
     price = data.get("price")
+    quantity = data.get("quantity")
     try:
-        if not all([name, price]):
+        if not all([name, price, quantity]):
             raise InvalidUsage("please fill missing fields", 400)
-        valid = validate(name, price)
+        valid = validate(name, price, quantity)
         if not valid:
             raise InvalidUsage("incorrect information", 400)
         found_product = find_product(name)
         if found_product:
             raise InvalidUsage(f"{name} already exists", 400)
         item_id = max([item.productId for item in products]) + 1 if products else 1     # create productId
-        item = Product(item_id, name, price)
+        item = Product(item_id, name, price, quantity)
         products.append(item)
         return jsonify({"message": str(item)}), 201
     except InternalServerError:

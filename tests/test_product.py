@@ -13,7 +13,7 @@ class TestProductApi(unittest.TestCase):
     # Test cases for add products
 
     def test_add_products(self):
-        post_signup = dict(name="Fahad", price=12)
+        post_signup = dict(name="Fahad", price=12, quantity=12)
         response = self.app.post('/api/v1/products', json=post_signup)
         assert response.status_code == 201
         assert response.headers["Content-Type"] == "application/json"
@@ -35,15 +35,15 @@ class TestProductApi(unittest.TestCase):
         assert "missing fields" in str(response.data)
 
     def test_incorrect_input(self):
-        post_signup = dict(name=1, price=1)
+        post_signup = dict(name=1, price=1, quantity=12)
         response = self.app.post('/api/v1/products', json=post_signup)
         # assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
         assert "incorrect information" in str(response.data)
 
-    def test_user_already_exists(self):
-        post_signup = dict(name="Fahad", price=12)
-        post_signup2 = dict(name="Fahad", price=12)
+    def test_product_already_exists(self):
+        post_signup = dict(name="Fahad", price=12, quantity=12)
+        post_signup2 = dict(name="Fahad", price=120, quantity=16)
         response = self.app.post('/api/v1/products', json=post_signup)
         response2 = self.app.post('/api/v1/products', json=post_signup2)
         assert response2.status_code == 400
@@ -53,8 +53,8 @@ class TestProductApi(unittest.TestCase):
     # Tests for get all products
 
     def test_get_all_products(self):
-        post_signup = dict(name="Fahad", price=12)
-        post_signup2 = dict(name="Jowe", price=120)
+        post_signup = dict(name="Fahad", price=12, quantity=12)
+        post_signup2 = dict(name="Jowe", price=120, quantity=16)
         response = self.app.post('/api/v1/products', json=post_signup)
         response2 = self.app.post('/api/v1/products', json=post_signup2)
         response3 = self.app.get('/api/v1/products')
@@ -69,7 +69,7 @@ class TestProductApi(unittest.TestCase):
         assert response3.headers["Content-Type"] == "application/json"
 
     def test_get_product_by_id(self):
-        post_signup = dict(name="Fahad", price=12)
+        post_signup = dict(name="Fahad", price=12, quantity=12)
         response = self.app.post('/api/v1/products', json=post_signup)
         response1 = self.app.get('/api/v1/products/1')
         assert response1.status_code == 200

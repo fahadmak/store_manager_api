@@ -23,10 +23,11 @@ class Product:
         to_json(self)
             Converts the product instance to a dictionary
     """
-    def __init__(self, productId, name, price):
+    def __init__(self, productId, name, price, quantity):
         self.productId = productId
         self.name = name
         self.price = price
+        self.quantity = quantity
 
     def __repr__(self):
         """A method to returns the string representation of an object"""
@@ -37,7 +38,8 @@ class Product:
         product = {
             'productId': self.productId,
             'name': self.name,
-            'price': self.price
+            'price': self.price,
+            'quantity': self.quantity
         }
         return product
 

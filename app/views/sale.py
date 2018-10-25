@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from app.models.model import Sale, sales, products
-from app.models.error_model import InvalidUsage, InternalServerError
+from app.error_handler import InvalidUsage, InternalServerError
 
 from app.utils import find_product
 
@@ -20,13 +20,21 @@ def add_sale():
             raise InvalidUsage("please fill missing fields", 400)
         if not isinstance(cart, dict):
             raise InvalidUsage("please input correct format like {'corn': 6000, 'fish': 12300}", 400)
-        unavailable = [item for item in cart if item not in [product.name for product in products]]
+        unavailable = [item for item in cart if not find_product(item)]
         if not unavailable:
+            shopping = [item for item in cart]
+            for item in cart:
+                if find_product(item).quantity >= cart[item]:
+                    find_product(item).quantity -= cart[item]
+                    shopping.remove(item)
+                else:
+                    few_instock = ', '.join(str(item) for item in shopping)
+                    raise InvalidUsage(f"{few_instock} these quantity are unavailable", 400)
             sold_id = max([sold.saleId for sold in sales]) + 1 if sales else 1
             sold = Sale(sold_id, cart)
             sales.append(sold)
             return jsonify({"message": str(sold)}), 201
-        raise InvalidUsage(f"{unavailable} products can not be found", 404)
+        raise InvalidUsage(f"{', '.join(str(item) for item in unavailable)} can not be found", 400)
     except InternalServerError:
         raise InternalServerError
 
