@@ -12,9 +12,6 @@ class TestSales(unittest.TestCase):
         self.sales = sales
         self.product = Product
         self.products = products
-        self.product1 = self.product(1, "benwa", 5000)
-        self.product2 = self.product(2, "meshu", 8000)
-        self.products = [self.product1, self.product2]
 
     def test_sale_content_type(self):
         post_sale = dict(cart={"Fahad": 2})
@@ -26,10 +23,12 @@ class TestSales(unittest.TestCase):
     # Test cases for add sales record
 
     def test_create_sale(self):
-        post_signup = dict(name="Fahad", price=12)
+        post_signup = dict(name="Fahad", price=12, quantity=20)
         response1 = self.app.post('/api/v1/products', json=post_signup)
+        print(post_signup['quantity'])
         post_sale = dict(cart={"Fahad": 2})
         response = self.app.post('/api/v1/sales', json=post_sale)
+        assert 18 in [product.quantity for product in self.products]
         assert response.status_code == 201
         assert response.headers["Content-Type"] == "application/json"
         assert "Sale of ID 1 has been created" == json.loads(response.data)['message']
@@ -51,12 +50,12 @@ class TestSales(unittest.TestCase):
     def test_product_not_found(self):
         post_sale = dict(cart={"finca": 2, "manny": 4})
         response = self.app.post('/api/v1/sales', json=post_sale)
-        assert response.status_code == 404
+        assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
-        assert "['finca', 'manny'] products can not be found" == json.loads(response.data)['message']
+        assert "finca, manny can not be found" == json.loads(response.data)['message']
 
     def test_get_all_sales(self):
-        post_signup = dict(name="Fahad", price=12)
+        post_signup = dict(name="Fahad", price=12, quantity=120)
         response1 = self.app.post('/api/v1/products', json=post_signup)
         post_sale = dict(cart={"Fahad": 2})
         response2 = self.app.post('/api/v1/sales', json=post_sale)
@@ -76,7 +75,7 @@ class TestSales(unittest.TestCase):
         assert response.headers["Content-Type"] == "application/json"
 
     def test_get_sale_by_id(self):
-        post_signup = dict(name="Fahad", price=12)
+        post_signup = dict(name="Fahad", price=12, quantity=12)
         response1 = self.app.post('/api/v1/products', json=post_signup)
         post_sale = dict(cart={"Fahad": 2})
         response2 = self.app.post('/api/v1/sales', json=post_sale)
@@ -94,6 +93,16 @@ class TestSales(unittest.TestCase):
         assert isinstance(data, dict)
         assert response.status_code == 404
         assert response.headers["Content-Type"] == "application/json"
+
+    def test_quantity_low_in_stock(self):
+        post_signup = dict(name="Fahad", price=12, quantity=20)
+        response1 = self.app.post('/api/v1/products', json=post_signup)
+        print(post_signup['quantity'])
+        post_sale = dict(cart={"Fahad": 200})
+        response = self.app.post('/api/v1/sales', json=post_sale)
+        assert response.status_code == 400
+        assert response.headers["Content-Type"] == "application/json"
+        assert "Fahad these quantity are unavailable" == json.loads(response.data)['message']
 
     def tearDown(self):
         self.sales.clear()
