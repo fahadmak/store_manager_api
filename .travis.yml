@@ -14,7 +14,7 @@ install:
   - pip install codecov
 
 script:
-  - pytest --cov=app/
+  - pytest --cov=app/ --cov-report term-missing
   - coveralls
 after_success:
   - codecov
