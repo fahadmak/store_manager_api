@@ -41,7 +41,7 @@ GET /products                   | Gets all products
 GET /products/<product_id>      | Gets a product
 POST /sales                     | Add a new sale record
 GET /sales                      | Gets all sale records
-GET /sales/<sale_id>            | Gets a product
+GET /sales/<sale_id>            | Gets a sale
 
 
 **Prerequisites used to build the application**
