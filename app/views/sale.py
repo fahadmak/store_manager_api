@@ -35,8 +35,8 @@ def add_sale():
             sales.append(sold)
             return jsonify({"message": str(sold)}), 201
         raise InvalidUsage(f"{', '.join(str(item) for item in unavailable)} can not be found", 400)
-    except InternalServerError:
-        raise InternalServerError
+    except Exception:
+        return jsonify({"invalid": "Invalid Usage"})
 
 
 @sale.route("/api/v1/sales", methods=["GET"])
