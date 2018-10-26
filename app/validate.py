@@ -1,9 +1,22 @@
-import re
-
-
 def validate(name, price, quantity):
     """A method to Check if name and price are of the correct form"""
-    if re.compile('^[a-zA-Z]+').match(str(name)) and re.compile('([1-9][0-9]*)').match(str(price))\
-            and re.compile('([1-9][0-9]*)').match(str(quantity)):
-        return True
-    return False
+    errors = {}
+    if not isinstance(name, str):
+        errors['name'] = "incorrect username format"
+    if not isinstance(price, int):
+        errors['price'] = "incorrect price format"
+    if not isinstance(quantity, int):
+        errors['quantity'] = "incorrect quantity format"
+    return errors
+
+
+def empty(name, price, quantity):
+    """A method to Check if name and price are of the correct form"""
+    errors = {}
+    if not name:
+        errors['name'] = "empty name field"
+    if not price:
+        errors['price'] = "empty price field"
+    if not quantity:
+        errors['quantity'] = "empty quantity field"
+    return errors
