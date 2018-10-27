@@ -1,4 +1,5 @@
 import unittest
+import json
 
 from app import create_app
 from app.models.model import products
@@ -28,18 +29,18 @@ class TestProductApi(unittest.TestCase):
         assert "Invalid content type" in str(response.data)
 
     def test_empty_fields(self):
-        post_signup = dict(name="Fahad")
+        post_signup = dict()
         response = self.app.post('/api/v1/products', json=post_signup)
         assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
-        assert "missing fields" in str(response.data)
+        assert "empty price field" in json.loads(response.data)['error']['price']
 
     def test_incorrect_input(self):
-        post_signup = dict(name=1, price=1, quantity=12)
+        post_signup = dict(name=1, price="fahad", quantity="12")
         response = self.app.post('/api/v1/products', json=post_signup)
         # assert response.status_code == 400
         assert response.headers["Content-Type"] == "application/json"
-        assert "incorrect information" in str(response.data)
+        assert "incorrect username format" == json.loads(response.data)['error']['name']
 
     def test_product_already_exists(self):
         post_signup = dict(name="Fahad", price=12, quantity=12)

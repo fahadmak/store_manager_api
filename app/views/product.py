@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from app.models.model import Product, products
-from app.error_handler import InvalidUsage, InternalServerError
+from app.error_handler import InvalidUsage
 from app.validate import validate, empty
 from app.utils import find_product
 
@@ -14,26 +14,23 @@ def add_product():
     """A method adds product instance to products list"""
     if request.content_type != "application/json":
         raise InvalidUsage("Invalid content type", 400)
-    try:
-        data = request.json
-        name = data.get("name")
-        price = data.get("price")
-        quantity = data.get("quantity")
-        check = empty(name, price, quantity)
-        if check:
-            raise InvalidUsage(check, 400)
-        invalid = validate(name, price, quantity)
-        if invalid:
-            raise InvalidUsage(invalid, 400)
-        found_product = find_product(name)
-        if found_product:
-            raise InvalidUsage(f"{name} already exists", 400)
-        item_id = max([item.productId for item in products]) + 1 if products else 1     # create productId
-        item = Product(item_id, name, price, quantity)
-        products.append(item)
-        return jsonify({"message": str(item)}), 201
-    except Exception:
-        return jsonify({"invalid": "Invalid Usage"})
+    data = request.json
+    name = data.get("name")
+    price = data.get("price")
+    quantity = data.get("quantity")
+    check = empty(name, price, quantity)
+    if check:
+        raise InvalidUsage(check, 400)
+    invalid = validate(name, price, quantity)
+    if invalid:
+        raise InvalidUsage(invalid, 400)
+    found_product = find_product(name)
+    if found_product:
+        raise InvalidUsage(f"{name} already exists", 400)
+    item_id = max([item.productId for item in products]) + 1 if products else 1     # create productId
+    item = Product(item_id, name, price, quantity)
+    products.append(item)
+    return jsonify({"message": str(item)}), 201
 
 
 @product.route("/api/v1/products", methods=["GET"])
@@ -59,12 +56,5 @@ def get_product_by_id(product_id):
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
-    return response
-
-
-@product.errorhandler(InternalServerError)
-def internal_server_error():
-    response = jsonify({"message": InternalServerError.message})
-    response.status_code = InternalServerError.status_code
     return response
 
